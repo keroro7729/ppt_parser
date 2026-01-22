@@ -28,11 +28,13 @@ def parse_ppt(file_name: str) :
             indent=2,
         )
 
-        response = client.chat(
+        response = client.generate(
             system="너는 PPT 슬라이드 구조를 이해하고 요약하는 AI야.",
-            prompt="다음은 PPT 한 장의 구조 데이터야.\n" +
-                "의미를 해석해서 핵심 내용만 요약해줘.\n" +
-                f"{json_str}",
+            prompt=(
+                "다음은 PPT 한 장의 구조 데이터야.\n"
+                "의미를 해석해서 핵심 내용만 요약해줘.\n\n"
+                f"{json_str}"
+            ),
         )
 
         return response
