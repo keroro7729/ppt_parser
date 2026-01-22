@@ -129,6 +129,7 @@ def parse_ppt(file_name: str) :
         slides_payload,
         ensure_ascii=False,
         indent=2,
+        default=json_default,
     )
 
     response = client.generate(
@@ -161,6 +162,18 @@ def slide_df_to_json(slide_index: int, slide_df: pd.DataFrame) -> dict:
         "slide_index": slide_index,
         "shapes": shapes,
     }
+
+def json_default(o):
+    import numpy as np
+    import pandas as pd
+
+    if isinstance(o, (np.integer,)):
+        return int(o)
+    if isinstance(o, (np.floating,)):
+        return float(o)
+    if pd.isna(o):
+        return None
+    return str(o)
 
 if __name__ == "__main__":
     sample_file = "To_Be_MM_1.1.1.pptx"
