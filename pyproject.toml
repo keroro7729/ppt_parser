@@ -1,0 +1,22 @@
+[project]
+name = "ppt-parser"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "keroro7729",email = "keroro06108@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "python-pptx (>=0.6.21,<0.7.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{ include ="ppt_parser", from ="src" }]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

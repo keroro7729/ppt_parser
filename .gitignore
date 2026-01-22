@@ -1,0 +1,41 @@
+Python 기본
+pycache/
+*.py[cod]
+*.pyo
+*.pyd
+
+가상환경
+.venv/
+venv/
+ENV/
+env/
+
+Poetry
+poetry.lock
+
+빌드 / 패키징
+build/
+dist/
+*.egg-info/
+
+테스트 / 커버리지
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+IDE / 에디터
+.vscode/
+.idea/
+
+OS
+.DS_Store
+Thumbs.db
+
+로그 / 임시파일
+*.log
+*.tmp
+
+환경 변수
+.env
+.env.*
