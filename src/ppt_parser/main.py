@@ -8,29 +8,7 @@ from ppt_parser.ollama_client import OllamaClient
 # base path 경로 수정해서 사용
 BASE_DIR = Path(__file__).resolve().parents[2] / "sample"
 
-def parse_ppt(file_name: str) :
-    path = BASE_DIR / file_name
-    rows = load_pptx(path)
-    df = pd.DataFrame(rows)
-
-    columns = ["shape_type", "text", "table"]
-    client = OllamaClient(base_url="http://edhweb.iptime.org:11434", model="llama3.1")
-
-    for i in range(0, 6):
-        slide_index = i
-        slide_data = df[df["slide_index"] == slide_index]
-
-        slide_json = slide_df_to_json(slide_index, slide_data)
-
-        json_str = json.dumps(
-            slide_json,
-            ensure_ascii=False,
-            indent=2,
-        )
-
-        response = client.generate(
-            system=
-            """
+SYSTEM = """
 너는 **PPT 슬라이드 구조 데이터를 분석하여 텍스트로 재구성하는 전용 파서 AI**다.
 
 ### 🔹 역할 (Role)
@@ -129,11 +107,36 @@ def parse_ppt(file_name: str) :
 * ❌ confidence 누락
 * ❌ JSON 외 텍스트 출력
 
-            """,
-            prompt=f"다음은 PPT 슬라이드 구조 데이터다.\n\n{json_str}",
-        )
+"""
 
-        return response
+def parse_ppt(file_name: str) :
+    path = BASE_DIR / file_name
+    rows = load_pptx(path)
+    df = pd.DataFrame(rows)
+
+    columns = ["shape_type", "text", "table"]
+    client = OllamaClient(base_url="http://127.0.0.1:11434", model="llama3.1")
+
+    slides_payload = []
+
+    for slide_index in sorted(df["slide_index"].unique()):
+        slide_data = df[df["slide_index"] == slide_index]
+
+        slide_json = slide_df_to_json(slide_index, slide_data)
+        slides_payload.append(slide_json)
+
+    json_str = json.dumps(
+        slides_payload,
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    response = client.generate(
+        system=SYSTEM,
+        prompt=f"다음은 PPT 슬라이드 구조 데이터다.\n\n{json_str}",
+    )
+
+    return response
     
 def drop_none(d: dict) -> dict:
     return {k: v for k, v in d.items() if v is not None}
