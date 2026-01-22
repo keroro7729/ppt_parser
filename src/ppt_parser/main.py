@@ -3,6 +3,8 @@ from pathlib import Path
 import json
 import pandas as pd
 from ppt_parser.ollama_client import OllamaClient
+from ppt_parser.logger import setup_logger
+import logging
 
 
 # base path 경로 수정해서 사용
@@ -109,13 +111,20 @@ SYSTEM = """
 
 """
 
+logger = setup_logger(level=logging.INFO)
+
 def parse_ppt(file_name: str) :
     path = BASE_DIR / file_name
     rows = load_pptx(path)
     df = pd.DataFrame(rows)
+    logger.info("load_pptx 완료")
 
     columns = ["shape_type", "text", "table"]
-    client = OllamaClient(base_url="http://127.0.0.1:11434", model="llama3.1")
+    client = OllamaClient(
+        base_url="http://127.0.0.1:11434",
+        model="llama3.1",
+        timeout=10 * 60,
+    )
 
     slides_payload = []
 
@@ -132,11 +141,14 @@ def parse_ppt(file_name: str) :
         default=json_default,
     )
 
+    logger.info("json_str: "+json_str)
+
     response = client.generate(
         system=SYSTEM,
         prompt=f"다음은 PPT 슬라이드 구조 데이터다.\n\n{json_str}",
     )
 
+    logger.info("response: "+response)
     return response
     
 def drop_none(d: dict) -> dict:
