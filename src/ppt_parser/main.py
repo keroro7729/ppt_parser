@@ -2,7 +2,7 @@ from ppt_parser.loader import load_pptx
 from pathlib import Path
 import json
 import pandas as pd
-from ppt_parser.ollama_client import OllamaClient
+from ppt_parser.openai_client import OpenAIClient
 from ppt_parser.logger import setup_logger
 import logging
 
@@ -110,11 +110,7 @@ def parse_ppt(file_name: str) :
     logger.info("load_pptx 완료")
 
     columns = ["shape_type", "text", "table"]
-    client = OllamaClient(
-        base_url="http://127.0.0.1:11434",
-        model="llama3.1",
-        timeout=10 * 60,
-    )
+    client = OpenAIClient(model="gpt-4.1-mini")
 
     slides_payload = []
 
