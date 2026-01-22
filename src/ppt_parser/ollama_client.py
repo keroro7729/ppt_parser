@@ -13,27 +13,25 @@ class OllamaClient:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
 
-    def chat(
+    def generate(
         self,
         prompt: str,
         system: Optional[str] = None,
         temperature: float = 0.2,
     ) -> str:
-        url = f"{self.base_url}/api/chat"
-
-        messages = []
-        if system:
-            messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": prompt})
+        url = f"{self.base_url}/api/generate"
 
         payload = {
             "model": self.model,
-            "messages": messages,
+            "prompt": prompt,
             "options": {
                 "temperature": temperature,
             },
             "stream": False,
         }
+
+        if system:
+            payload["system"] = system
 
         response = requests.post(
             url,
@@ -42,4 +40,5 @@ class OllamaClient:
         )
         response.raise_for_status()
 
-        return response.json()["message"]["content"]
+        return response.json()["response"]
+
