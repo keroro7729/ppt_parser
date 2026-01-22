@@ -6,7 +6,7 @@ class OllamaClient:
     def __init__(
         self,
         model: str = "llama3.1",
-        base_url: str = "http://localhost:11434",
+        base_url: str = "http://127.0.0.1:11434",
         timeout: int = 60,
     ):
         self.model = model

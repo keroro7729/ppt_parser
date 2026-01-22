@@ -7,7 +7,7 @@
 프로젝트 루트에서 다음 명령어 실행
 - poetry install
 
-3. 프로그램 실행
+3. **프로그램 실행**
 poetry run python -m ppt_parser.main
 
 4. 다른 파일로 테스트하기
