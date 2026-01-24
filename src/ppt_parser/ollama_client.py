@@ -25,10 +25,10 @@ class OllamaClient:
         payload = {
             "model": self.model,
             "prompt": prompt,
+            "stream": False,
             "options": {
                 "temperature": temperature,
             },
-            "stream": False,
         }
 
         if system:
@@ -39,26 +39,24 @@ class OllamaClient:
             json=payload,
             timeout=self.timeout,
         )
-        response.raise_for_status()
 
         return response.json()["response"]
-    
+
     def generate_with_file(self, file_path: Path) -> str:
         url = f"{self.base_url}/api/generate"
 
-        with open(file_path, "rb") as f:
-            response = requests.post(
-                url,
-                timeout=self.timeout,
-                files={
-                    "file": f,
-                },
-                data={
-                    "model": self.model,
-                    "stream": "false",
-                },
-            )
+        prompt = f"<file:{file_path.resolve()}>"
 
-        response.raise_for_status()
+        payload = {
+            "model": self.model,
+            "prompt": prompt,
+            "stream": False,
+        }
+
+        response = requests.post(
+            url,
+            json=payload,
+            timeout=self.timeout,
+        )
+
         return response.json()["response"]
-
