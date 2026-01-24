@@ -112,7 +112,7 @@ def parse_ppt(file_name: str) :
     columns = ["shape_type", "text", "table"]
     client = OllamaClient(
         base_url="http://127.0.0.1:11434",
-        model="llama3.1",
+        model="ibm/granite-docling",
         timeout=10 * 60,
     )
 
