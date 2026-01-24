@@ -1,5 +1,6 @@
 import requests
 from typing import Optional
+from pathlib import Path
 
 
 class OllamaClient:
@@ -40,5 +41,24 @@ class OllamaClient:
         )
         response.raise_for_status()
 
+        return response.json()["response"]
+    
+    def generate_with_file(self, file_path: Path) -> str:
+        url = f"{self.base_url}/api/generate"
+
+        with open(file_path, "rb") as f:
+            response = requests.post(
+                url,
+                timeout=self.timeout,
+                files={
+                    "file": f,
+                },
+                data={
+                    "model": self.model,
+                    "stream": "false",
+                },
+            )
+
+        response.raise_for_status()
         return response.json()["response"]
 
